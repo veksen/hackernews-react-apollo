@@ -19,7 +19,11 @@ class LinkList extends Component {
     const linksToRender = this.props.feedQuery.feed.links;
 
     return (
-      <div>{linksToRender.map(link => <Link key={link.id} link={link} />)}</div>
+      <div>
+        {linksToRender.map((link, index) => (
+          <Link key={link.id} index={index} link={link} />
+        ))}
+      </div>
     )
   }
 }
@@ -27,13 +31,23 @@ class LinkList extends Component {
 // 1
 const FEED_QUERY = gql`
   # 2
-  query FeedQuery {
-    feed {
+  query FeedQuery($first: Int, $skip: Int, $orderBy: LinkOrderByInput) {
+    feed(first: $first, skip: $skip, orderBy: $orderBy) {
       links {
         id
         createdAt
         url
         description
+        postedBy {
+          id
+          name
+        }
+        votes {
+          id
+          user {
+            id
+          }
+        }
       }
     }
   }
